@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <section class="calendar">
+            <div class="calendar__block">
+                <div class="calendar__header">
+                    <div class="calendar__month">
+                        <nav class="calendar__month-prev" @click="showPrevMonth"><span></span></nav>
+                        <p class="calendar__month-name">{{monthName}} {{fullYear}}</p>
+                        <nav class="calendar__month-next" @click="showNextMonth"><span></span></nav>
+                    </div>
+                </div>
+                <div class="calendar__content">
+                    <ul class="calendar__days">
+                        <li class="calendar__day" v-for="day in weekDays" :key="day">{{day}}</li>
+                    </ul>
+                    <ul class="calendar__dates">
+                        <li 
+                            v-for="date, index in calendarDates"
+                            :key="'prev' + index"
+                            class="calendar__date"
+                            @click="getSelMonthDay(date, index)"
+                            :class="{grayDay: startWeekday != 1 && index < startWeekday - 1 ||
+                                startWeekday === 1 && endWeekday === 7 && index >= calendarDates.length - endWeekday ||
+                                startWeekday === 1 && endWeekday < 7 && index >= calendarDates.length - 7 + endWeekday ||
+                                startWeekday != 1 && endWeekday < 7 && index >= calendarDates.length - 7 + endWeekday}"
+                            :id="[index + 1 < startWeekday && month != 0 ? fullYear + '-' + prevMonth + '-' + date : '' ||
+                            index + 1 >= startWeekday && index <= parseInt(endOfMonth) + startWeekday - 2 ? fullYear + '-' + (month + 1) + '-' + date : '' ||
+                            index > parseInt(endOfMonth) + startWeekday - 2 && month != 11 ? fullYear + '-' + nextMonth + '-' + date : '' ||
+                            index + 1 < startWeekday && month === 0 ? (fullYear - 1) + '-' + prevMonth + '-' + date : '' ||
+                            index > parseInt(endOfMonth) + startWeekday - 2 && month === 11 ? (fullYear + 1) + '-' + nextMonth + '-' + date : '']"
+                        >
+                            <span class="calendar__date-circle"
+                            :class="'calendar__date-circle' + index">{{date}}</span>
+                            <span class="calendar__date-highlight"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
